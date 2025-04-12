@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -31,6 +31,7 @@ const thaiLocaleText = {
 };
 
 const dateTimeFormat = "DD MMM YYYY HH:mm"; // Thai date format
+const dateFormat = "DD MMM YYYY"; // Thai date format for DatePicker
 const textFieldVaraint = "standard"; // Standard variant for TextField
 const fieldSize = "small"; // Small size for TextField
 
@@ -39,12 +40,15 @@ export default function CrimeReportForm() {
   const genderOptions = ["ชาย", "หญิง", "LGBTQ+", "ไม่ระบุ"];
   const initialOptions = ["นาย", "นาง", "นางสาว", "ไม่ระบุ"];
   const reporterOptions = ["ด.ต.สมชาย", "ร.ต.อ.หญิง สุรีย์พร", "พ.ต.ท.อดิศร"];
-  const [id, setId] = React.useState<string>("");
-  const [phone, setPhone] = React.useState<string>("");
-  const [reporter, setReporter] = React.useState<string>("");
-  const [personType, setPersonType] = React.useState<string>("");
-  const [crimeGender, setCrimeGender] = React.useState<string>("");
-  const [crimeInitial, setCrimeInitial] = React.useState<string>("");
+  const [crimeIdNumber, setCrimeIdNumber] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [reporter, setReporter] = useState<string>("");
+  const [personType, setPersonType] = useState<string>("");
+  const [crimeGender, setCrimeGender] = useState<string>("");
+  const [crimeInitial, setCrimeInitial] = useState<string>("");
+
+  const [relatedPersonIdNumber, setRelatedPersonIdNumber] =
+    useState<string>("");
   return (
     <>
       <div className="max-w-6xl mx-auto p-4 bg-white shadow-md rounded-lg mt-10 mb-10">
@@ -115,15 +119,15 @@ export default function CrimeReportForm() {
                 variant={textFieldVaraint}
                 size={fieldSize}
               />
-              <DatePicker label="วันเกิด" />
+              <DatePicker label="วันเกิด" format={dateFormat} />
             </GridSection>
             <GridSection>
               <IdField
                 label="เลขบัตรประชาชน"
                 variant={textFieldVaraint}
                 size={fieldSize}
-                value={id}
-                onChange={setId}
+                value={crimeIdNumber}
+                onChange={setCrimeIdNumber}
               />
               <TextField
                 label="ที่อยู่ปัจจุบัน"
@@ -178,7 +182,7 @@ export default function CrimeReportForm() {
                 variant={textFieldVaraint}
                 size={fieldSize}
               />
-              <DatePicker label="วันเดือนปีที่จับกุม" />
+              <DatePicker label="วันเดือนปีที่จับกุม" format={dateFormat} />
               <TextField
                 label="พื้นที่จับกุม (สน./สภ.)"
                 variant={textFieldVaraint}
@@ -191,7 +195,6 @@ export default function CrimeReportForm() {
               />
             </GridSection>
             <GridSection>
-              {" "}
               <TextField
                 label="ชื่อ-สกุล ผู้เกี่ยวข้องเป็น"
                 variant={textFieldVaraint}
@@ -201,12 +204,11 @@ export default function CrimeReportForm() {
                 label="เลขประจำตัวประชาชน"
                 variant={textFieldVaraint}
                 size={fieldSize}
-                value={id}
-                onChange={setId}
+                value={relatedPersonIdNumber}
+                onChange={setRelatedPersonIdNumber}
               />
             </GridSection>
             <GridSection>
-              {" "}
               <ComboBox
                 label={"เจ้าหน้าที่ตำรวจผู้บันทึก"}
                 options={reporterOptions}

@@ -32,6 +32,9 @@ const thaiLocaleText = {
   },
 };
 
+const thaiLocaleTextDefaultProps =
+  thaiLocaleText.components.MuiLocalizationProvider.defaultProps.localeText;
+
 const dateTimeFormat = "DD MMM YYYY HH:mm"; // Thai date format
 const dateFormat = "DD MMM YYYY"; // Thai date format for DatePicker
 const textFieldVaraint = "standard"; // Standard variant for TextField
@@ -87,10 +90,7 @@ export default function CrimeReportForm() {
         <LocalizationProvider
           dateAdapter={AdapterDayjs}
           adapterLocale="th"
-          localeText={
-            thaiLocaleText.components.MuiLocalizationProvider.defaultProps
-              .localeText
-          }
+          localeText={thaiLocaleTextDefaultProps}
         >
           <form className="grid">
             <div className="col-span-full">

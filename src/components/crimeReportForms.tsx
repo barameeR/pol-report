@@ -11,6 +11,8 @@ import PhoneField from "./phoneField";
 import IdField from "./idField";
 import ComboBox from "./comboBox";
 import GridSection from "./gridSection";
+import InputFileUpload from "./intputUploadFile";
+import { v4 as uuid } from "uuid";
 
 // Set the locale globally for dayjs
 dayjs.locale("th");
@@ -30,6 +32,9 @@ const thaiLocaleText = {
   },
 };
 
+const thaiLocaleTextDefaultProps =
+  thaiLocaleText.components.MuiLocalizationProvider.defaultProps.localeText;
+
 const dateTimeFormat = "DD MMM YYYY HH:mm"; // Thai date format
 const dateFormat = "DD MMM YYYY"; // Thai date format for DatePicker
 const textFieldVaraint = "standard"; // Standard variant for TextField
@@ -40,15 +45,36 @@ export default function CrimeReportForm() {
   const genderOptions = ["ชาย", "หญิง", "LGBTQ+", "ไม่ระบุ"];
   const initialOptions = ["นาย", "นาง", "นางสาว", "ไม่ระบุ"];
   const reporterOptions = ["ด.ต.สมชาย", "ร.ต.อ.หญิง สุรีย์พร", "พ.ต.ท.อดิศร"];
+  const imangeInitialPrefix = "crime-image-";
   const [crimeIdNumber, setCrimeIdNumber] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [reporter, setReporter] = useState<string>("");
   const [personType, setPersonType] = useState<string>("");
   const [crimeGender, setCrimeGender] = useState<string>("");
   const [crimeInitial, setCrimeInitial] = useState<string>("");
-
+  const [images, setImages] = useState<Record<string, File>>({});
   const [relatedPersonIdNumber, setRelatedPersonIdNumber] =
     useState<string>("");
+
+  function handleOnChangeImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (files) {
+      const newImages: Record<string, File> = {};
+      Array.from(files).forEach((file) => {
+        const key = `${imangeInitialPrefix}-${uuid()}`; // Generate a unique key for each file
+        newImages[key] = file;
+      });
+      setImages((prev) => ({ ...prev, ...newImages }));
+    }
+  }
+
+  function handleOnDeleteImage(id: string) {
+    setImages((prev) => {
+      const newImages = { ...prev };
+      delete newImages[id];
+      return newImages;
+    });
+  }
   return (
     <>
       <div className="max-w-6xl mx-auto p-4 bg-white shadow-md rounded-lg mt-10 mb-10">
@@ -64,10 +90,7 @@ export default function CrimeReportForm() {
         <LocalizationProvider
           dateAdapter={AdapterDayjs}
           adapterLocale="th"
-          localeText={
-            thaiLocaleText.components.MuiLocalizationProvider.defaultProps
-              .localeText
-          }
+          localeText={thaiLocaleTextDefaultProps}
         >
           <form className="grid">
             <div className="col-span-full">
@@ -215,6 +238,17 @@ export default function CrimeReportForm() {
                 value={reporter}
                 onChange={setReporter}
                 variant={textFieldVaraint}
+              />
+            </GridSection>
+            <GridSection>
+              <InputFileUpload
+                className="col-span-full"
+                label="แนบรูปภาพ"
+                onChange={handleOnChangeImage}
+                onDelete={handleOnDeleteImage}
+                value={images}
+                accept="image/*"
+                multiple={true}
               />
             </GridSection>
           </form>
